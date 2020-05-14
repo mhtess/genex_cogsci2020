@@ -1,0 +1,10 @@
+*.DS_Store
+*.Rproj.user
+*.Rproj
+*.bst
+*.aux
+*.bbl
+*.blg
+*.log
+paper/genex_cogsci20.pdf
+*synctex.gz
