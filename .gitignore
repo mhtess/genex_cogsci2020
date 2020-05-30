@@ -9,3 +9,6 @@
 paper/genex_cogsci20.pdf
 *synctex.gz
 .Rproj.user
+.Rhistory
+*.key
+*.numbers
