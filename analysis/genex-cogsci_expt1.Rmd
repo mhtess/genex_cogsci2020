@@ -156,6 +156,10 @@ df.trials.filtered <- df.trials.filtered.mem %>%
 ## Number of Participants per condition
 
 ```{r}
+length(unique(df.trials.filtered$workerid)) # data frame after exlcusions
+
+length(unique(df.trials$workerid)) # original data frame
+
 df.trials.filtered %>% 
   select(workerid, condition, kind_type, trial_type) %>%
   filter(kind_type == "bird", trial_type == "response") %>%
@@ -165,27 +169,10 @@ df.trials.filtered %>%
 ```
 
 
-```{r}
-length(unique(df.trials.filtered$workerid))
-length(unique(df.trials$workerid))
-```
-
-## Output derivative files
-
-Output "generic only" condition separately for compilation with Expt. 2 data. 
-Also output filtered data for model.
-
-```{r eval = F}
-df.trials.filtered %>% 
-  filter(condition == "generic") -> df.trials.filtered.generic
-
-# write_csv(df.trials.filtered.generic, path = "../data/expt2/genex-cogsci_expt1-genericOnly.csv")
-# write_csv(df.trials.filtered, path = "../data/expt1/genex-cogsci_expt1-filtered.csv")
-```
-
 # Analysis and Visualization
 
-```{r}
+```{r relevel}
+# grab main trail responses and relevel condition factor
 df.trials.filtered.recoded <- df.trials.filtered %>%
   filter(trial_type == 'response') %>%
   mutate(condition = factor(condition,
@@ -209,11 +196,8 @@ df.trials.filtered.recoded <- df.trials.filtered %>%
                                        "4x Pedagogical",
                                        "Generic",
                                        "Generic \n+ 1x Pedagogical")))
-```
 
-Number of responses per subject
-
-```{r}
+## check: Number of responses per subject
 df.trials.filtered.recoded %>%
   group_by(workerid) %>%
   summarize(n = n()) %>%
@@ -222,53 +206,24 @@ df.trials.filtered.recoded %>%
   count()
 ```
 
-
-## Histograms
-
-```{r}
-df.trials.filtered.recoded %>%
-  ggplot(., aes(x = response))+
-  geom_histogram()+
-  facet_wrap(~condition, nrow = 1)+
-  scale_x_continuous(breaks = c(0, 1))
-```
-
-
-```{r}
-df.trials.filtered.recoded %>%
-  ggplot(., aes(x = response))+
-  geom_histogram()+
-  facet_grid(feature_label~condition)
-```
-Trial order
-
-```{r}
-df.trials.filtered.recoded %>%
-  ggplot(., aes(x = response))+
-  geom_histogram()+
-  facet_grid(trial_num~condition)
-```
-
-
+Compute bootstrapped 95% confidence intervals, by condition and by-itemXcondition
+```{r CIs}
 ## 95 CIs
-
-```{r}
 df.bs <- df.trials.filtered.recoded %>%
   group_by(condition) %>%
   tidyboot_mean(column = response) %>%
   ungroup() %>%
   mutate(condition = factor(condition))
+
+df.bs.item <- df.trials.filtered.recoded %>%
+  group_by(condition, kind_type, feature_label) %>%
+  tidyboot_mean(column = response) %>%
+  ungroup() %>%
+  mutate(condition = factor(condition),
+         kind_type = factor(kind_type, levels = c("bird", "flower", "artifact")))
 ```
 
-```{r}
-df.bs %>%
-  ggplot(., aes(x = condition, y = mean, ymin = ci_lower,
-                ymax = ci_upper)) +
-  geom_col(color = 'black', fill = 'white')+
-  geom_linerange()
-```
-
-### Ridge distribution plots
+## Ridge distribution plot (Figure 3A)
 
 ```{r}
 ggplot(df.trials.filtered.recoded, 
@@ -286,11 +241,9 @@ ggplot(df.trials.filtered.recoded,
         y = as.numeric(condition)+0.4),
     size = 1.25, color = 'black')+
   geom_vline(data = df.bs %>% filter(condition == "Generic"), 
-             #inherit.aes = F, 
              linetype = 2, alpha = 0.4,
              aes(xintercept = ci_lower))+
   geom_vline(data = df.bs %>% filter(condition == "Generic"), 
-             #inherit.aes = F, 
              linetype = 2, alpha = 0.4,
              aes(xintercept = ci_upper))+
   geom_point(data = df.bs,
@@ -309,22 +262,75 @@ ggplot(df.trials.filtered.recoded,
         axis.title.x = element_text(hjust = 0.5, vjust = 0))+
   labs(x = "Probability of Future Instance having Property")
 
-ggsave("../paper/figs/genex-expt1.pdf",
-       width = 5, height = 5)
+# ggsave("../paper/figs/genex-expt1.pdf", width = 5, height = 5)
 ```
 
-## By-item analysis
+## By-item bar plot (Figure 4A)
 
 ```{r}
-df.bs.item <- df.trials.filtered.recoded %>%
-  group_by(condition, kind_type, feature_label) %>%
-  tidyboot_mean(column = response) %>%
-  ungroup() %>%
-  mutate(condition = factor(condition),
-         kind_type = factor(kind_type, levels = c("bird", "flower", "artifact")))
+bar.width = 0.7
+
+df.bs.item %>%
+  ggplot(., aes(x = condition, fill = kind_type, 
+                y = mean, ymin = ci_lower,
+                ymax = ci_upper)) +
+  geom_hline(data = df.bs %>% filter(condition == "Generic"),
+             linetype = 2, alpha = 0.4,
+             aes(yintercept = ci_lower))+
+  geom_hline(data = df.bs %>% filter(condition == "Generic"),
+             linetype = 2, alpha = 0.4,
+             aes(yintercept = ci_upper))+
+  geom_col(color = 'black', width = bar.width, position = position_dodge(bar.width),
+           alpha = 0.5)+
+  geom_linerange( position = position_dodge(bar.width))+
+  coord_flip()+
+   guides(fill = guide_legend(reverse = T))+
+  labs(y = "Probability of Future Instance having Property", x = "",
+       fill = "item")+
+  theme(legend.position = 'bottom')
+
+# ggsave("../paper/figs/genex10conditions_byItem_bars_reordered.pdf",
+#        width = 5, height = 4.5)
+
 ```
 
-### ridge plots
+
+# Other plots
+
+## Bars
+
+```{r}
+df.bs %>%
+  ggplot(., aes(x = condition, y = mean, ymin = ci_lower,
+                ymax = ci_upper)) +
+  geom_col(color = 'black', fill = 'white')+
+  geom_linerange()+
+  coord_flip()
+```
+
+## Histograms
+
+```{r}
+df.trials.filtered.recoded %>%
+  ggplot(., aes(x = response))+
+  geom_histogram()+
+  facet_wrap(~condition, nrow = 2)+
+  scale_x_continuous(breaks = c(0, 1))
+```
+
+
+## By-item plots
+
+### by-item Histograms
+
+```{r}
+df.trials.filtered.recoded %>%
+  ggplot(., aes(x = response))+
+  geom_histogram()+
+  facet_grid(feature_label~condition)
+```
+
+### by-item ridge plots
 
 ```{r}
 df.trials.filtered.recoded %>%
@@ -375,41 +381,54 @@ ggsave("../paper/figs/genex10conditions_byItem_reordered.pdf",
 
 ```
 
+
+## By-trial num plots
+
+### By-trial num histograms
+
+```{r}
+df.trials.filtered.recoded %>%
+  ggplot(., aes(x = response))+
+  geom_histogram()+
+  facet_grid(trial_num~condition)
+```
+
+
+### By-trial num bar plots
+
+```{r}
+df.bs.trial_num <- df.trials.filtered.recoded %>%
+  group_by(condition, trial_num) %>%
+  tidyboot_mean(column = response)
+```
 ```{r}
 bar.width = 0.7
 
-df.bs.item %>%
-  ggplot(., aes(x = condition, fill = kind_type, 
+df.bs.trial_num %>%
+  mutate(trial_num = factor(trial_num)) %>%
+  ggplot(., aes(x = condition, fill = trial_num, 
                 y = mean, ymin = ci_lower,
                 ymax = ci_upper)) +
   geom_hline(data = df.bs %>% filter(condition == "Generic"),
-             #inherit.aes = F,
              linetype = 2, alpha = 0.4,
              aes(yintercept = ci_lower))+
   geom_hline(data = df.bs %>% filter(condition == "Generic"),
-             #inherit.aes = F,
              linetype = 2, alpha = 0.4,
              aes(yintercept = ci_upper))+
   geom_col(color = 'black', width = bar.width, position = position_dodge(bar.width),
            alpha = 0.5)+
   geom_linerange( position = position_dodge(bar.width))+
   coord_flip()+
-  # scale_fill_manual(name = "item")+ #option = "D",
-  # breaks = c(0, 1)) +
    guides(fill = guide_legend(reverse = T))+
-  # theme(axis.title.y = element_blank(),
-  #       axis.title.x = element_text(hjust = 0.5, vjust = 0))+
   labs(y = "Probability of Future Instance having Property", x = "",
        fill = "item")+
   theme(legend.position = 'bottom')
-
-ggsave("../paper/figs/genex10conditions_byItem_bars_reordered.pdf",
-       width = 5, height = 4.5)
-
 ```
 
 
-#### Pedagogical and Generic only
+## Subset of conditions
+
+### Ridgeplots: Pedagogical and Generic only
 
 ```{r}
 generic.and.pedagogical <-  c("1x Pedagogical",
@@ -465,7 +484,7 @@ ggplot(df.trials.filtered.recoded.ped,
 #        width = 5, height =4 )
 ```
 
-#### Accidental and Generic only
+### Ridgeplots: Accidental and Generic only
 
 ```{r}
 generic.and.accidental <-  c("1x Accidental",
@@ -628,5 +647,19 @@ rs.brm.dummy.betaInfl <- brm(response ~ condition_flat + (1 | workerid) +
                     )
 
 summary(rs.brm.dummy.betaInfl)
+```
+
+
+# Output derivative files
+
+Output "generic only" condition separately for compilation with Expt. 2 data. 
+Also output filtered data for model.
+
+```{r eval = F}
+df.trials.filtered %>% 
+  filter(condition == "generic") -> df.trials.filtered.generic
+
+# write_csv(df.trials.filtered.generic, path = "../data/expt2/genex-cogsci_expt1-genericOnly.csv")
+# write_csv(df.trials.filtered, path = "../data/expt1/genex-cogsci_expt1-filtered.csv")
 ```
 
