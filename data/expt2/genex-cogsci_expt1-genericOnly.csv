@@ -1,0 +1,247 @@
+workerid,exptid,trial_type,trial_num,condition,kind_type,kind_label,feature_label,response,n_correct,pass,pass_sound
+033531a53debb026a5a45a59afb615ef,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+033531a53debb026a5a45a59afb615ef,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+033531a53debb026a5a45a59afb615ef,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+033531a53debb026a5a45a59afb615ef,1,response,1,generic,artifact,Blicket,squeaks,0.98,3,TRUE,TRUE
+033531a53debb026a5a45a59afb615ef,1,response,2,generic,flower,Dax,has a black center,0.98,3,TRUE,TRUE
+033531a53debb026a5a45a59afb615ef,1,response,3,generic,bird,Fep,has white wings,0.99,3,TRUE,TRUE
+0bd6cc8256d57837e52252e171e8a8c2,1,id,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+0bd6cc8256d57837e52252e171e8a8c2,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+0bd6cc8256d57837e52252e171e8a8c2,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+0bd6cc8256d57837e52252e171e8a8c2,1,response,1,generic,flower,Dax,has a black center,0.91,3,TRUE,TRUE
+0bd6cc8256d57837e52252e171e8a8c2,1,response,2,generic,bird,Fep,has white wings,0.86,3,TRUE,TRUE
+0bd6cc8256d57837e52252e171e8a8c2,1,response,3,generic,artifact,Blicket,squeaks,0.77,3,TRUE,TRUE
+1a62d588f81d96a0921a7796b10f4e8e,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+1a62d588f81d96a0921a7796b10f4e8e,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+1a62d588f81d96a0921a7796b10f4e8e,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+1a62d588f81d96a0921a7796b10f4e8e,1,response,1,generic,artifact,Blicket,squeaks,0.82,3,TRUE,TRUE
+1a62d588f81d96a0921a7796b10f4e8e,1,response,2,generic,bird,Fep,has white wings,0.95,3,TRUE,TRUE
+1a62d588f81d96a0921a7796b10f4e8e,1,response,3,generic,flower,Dax,has a black center,0.93,3,TRUE,TRUE
+1bfed0791c7855c3542ede7cf596335a,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+1bfed0791c7855c3542ede7cf596335a,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+1bfed0791c7855c3542ede7cf596335a,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+1bfed0791c7855c3542ede7cf596335a,1,response,1,generic,artifact,Blicket,squeaks,0.91,3,TRUE,TRUE
+1bfed0791c7855c3542ede7cf596335a,1,response,2,generic,flower,Dax,has a black center,0.94,3,TRUE,TRUE
+1bfed0791c7855c3542ede7cf596335a,1,response,3,generic,bird,Fep,has white wings,0.92,3,TRUE,TRUE
+1c85e0a58257a9b516cdfebc0675f1a6,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+1c85e0a58257a9b516cdfebc0675f1a6,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+1c85e0a58257a9b516cdfebc0675f1a6,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+1c85e0a58257a9b516cdfebc0675f1a6,1,response,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+1c85e0a58257a9b516cdfebc0675f1a6,1,response,2,generic,flower,Dax,has a black center,0.62,3,TRUE,TRUE
+1c85e0a58257a9b516cdfebc0675f1a6,1,response,3,generic,bird,Fep,has white wings,0.9,3,TRUE,TRUE
+1fa68b0e7666f022dae6304d9dec4bb9,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+1fa68b0e7666f022dae6304d9dec4bb9,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+1fa68b0e7666f022dae6304d9dec4bb9,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+1fa68b0e7666f022dae6304d9dec4bb9,1,response,1,generic,bird,Fep,has white wings,0.89,3,TRUE,TRUE
+1fa68b0e7666f022dae6304d9dec4bb9,1,response,2,generic,flower,Dax,has a black center,0.91,3,TRUE,TRUE
+1fa68b0e7666f022dae6304d9dec4bb9,1,response,3,generic,artifact,Blicket,squeaks,0.87,3,TRUE,TRUE
+217cc311b7bcd4e78985d393e50ed645,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+217cc311b7bcd4e78985d393e50ed645,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+217cc311b7bcd4e78985d393e50ed645,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+217cc311b7bcd4e78985d393e50ed645,1,response,1,generic,artifact,Blicket,squeaks,0.89,3,TRUE,TRUE
+217cc311b7bcd4e78985d393e50ed645,1,response,2,generic,flower,Dax,has a black center,0.93,3,TRUE,TRUE
+217cc311b7bcd4e78985d393e50ed645,1,response,3,generic,bird,Fep,has white wings,0.91,3,TRUE,TRUE
+3c1d3dced02667537f6e8124b33cf77f,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+3c1d3dced02667537f6e8124b33cf77f,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+3c1d3dced02667537f6e8124b33cf77f,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+3c1d3dced02667537f6e8124b33cf77f,1,response,1,generic,artifact,Blicket,squeaks,0.76,3,TRUE,TRUE
+3c1d3dced02667537f6e8124b33cf77f,1,response,2,generic,flower,Dax,has a black center,0.76,3,TRUE,TRUE
+3c1d3dced02667537f6e8124b33cf77f,1,response,3,generic,bird,Fep,has white wings,0.96,3,TRUE,TRUE
+3ceeef0fcf15c0184e45a7fe5c395cba,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+3ceeef0fcf15c0184e45a7fe5c395cba,1,id,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+3ceeef0fcf15c0184e45a7fe5c395cba,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+3ceeef0fcf15c0184e45a7fe5c395cba,1,response,1,generic,bird,Fep,has white wings,0.97,3,TRUE,TRUE
+3ceeef0fcf15c0184e45a7fe5c395cba,1,response,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+3ceeef0fcf15c0184e45a7fe5c395cba,1,response,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+4773b36ce15837b35122da528a27623d,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+4773b36ce15837b35122da528a27623d,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+4773b36ce15837b35122da528a27623d,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+4773b36ce15837b35122da528a27623d,1,response,1,generic,artifact,Blicket,squeaks,0.98,3,TRUE,TRUE
+4773b36ce15837b35122da528a27623d,1,response,2,generic,bird,Fep,has white wings,0.98,3,TRUE,TRUE
+4773b36ce15837b35122da528a27623d,1,response,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+559b65586c22322619c13d097b3cbcbb,1,id,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+559b65586c22322619c13d097b3cbcbb,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+559b65586c22322619c13d097b3cbcbb,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+559b65586c22322619c13d097b3cbcbb,1,response,1,generic,flower,Dax,has a black center,0.77,3,TRUE,TRUE
+559b65586c22322619c13d097b3cbcbb,1,response,2,generic,bird,Fep,has white wings,0.79,3,TRUE,TRUE
+559b65586c22322619c13d097b3cbcbb,1,response,3,generic,artifact,Blicket,squeaks,0.88,3,TRUE,TRUE
+58b513783ee33c3c4182ca6d4b173fc9,1,id,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+58b513783ee33c3c4182ca6d4b173fc9,1,id,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+58b513783ee33c3c4182ca6d4b173fc9,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+58b513783ee33c3c4182ca6d4b173fc9,1,response,1,generic,flower,Dax,has a black center,0.49,3,TRUE,TRUE
+58b513783ee33c3c4182ca6d4b173fc9,1,response,2,generic,artifact,Blicket,squeaks,0.72,3,TRUE,TRUE
+58b513783ee33c3c4182ca6d4b173fc9,1,response,3,generic,bird,Fep,has white wings,0.34,3,TRUE,TRUE
+5a4dece009660388a3796446ecdcbf49,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+5a4dece009660388a3796446ecdcbf49,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+5a4dece009660388a3796446ecdcbf49,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+5a4dece009660388a3796446ecdcbf49,1,response,1,generic,bird,Fep,has white wings,0.88,3,TRUE,TRUE
+5a4dece009660388a3796446ecdcbf49,1,response,2,generic,flower,Dax,has a black center,0.9,3,TRUE,TRUE
+5a4dece009660388a3796446ecdcbf49,1,response,3,generic,artifact,Blicket,squeaks,0.91,3,TRUE,TRUE
+5f296272c5c656bcef382862b7713655,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+5f296272c5c656bcef382862b7713655,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+5f296272c5c656bcef382862b7713655,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+5f296272c5c656bcef382862b7713655,1,response,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+5f296272c5c656bcef382862b7713655,1,response,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+5f296272c5c656bcef382862b7713655,1,response,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+602f491d5396dce1a7d84b5dfc94055d,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+602f491d5396dce1a7d84b5dfc94055d,1,id,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+602f491d5396dce1a7d84b5dfc94055d,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+602f491d5396dce1a7d84b5dfc94055d,1,response,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+602f491d5396dce1a7d84b5dfc94055d,1,response,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+602f491d5396dce1a7d84b5dfc94055d,1,response,3,generic,flower,Dax,has a black center,0.96,3,TRUE,TRUE
+65ce2f85d05c5426d43bf214b81d67f5,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+65ce2f85d05c5426d43bf214b81d67f5,1,id,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+65ce2f85d05c5426d43bf214b81d67f5,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+65ce2f85d05c5426d43bf214b81d67f5,1,response,1,generic,bird,Fep,has white wings,0.99,3,TRUE,TRUE
+65ce2f85d05c5426d43bf214b81d67f5,1,response,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+65ce2f85d05c5426d43bf214b81d67f5,1,response,3,generic,flower,Dax,has a black center,0.99,3,TRUE,TRUE
+6f6e2adab8bd0faf4075e4718c067ec8,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+6f6e2adab8bd0faf4075e4718c067ec8,1,id,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+6f6e2adab8bd0faf4075e4718c067ec8,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+6f6e2adab8bd0faf4075e4718c067ec8,1,response,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+6f6e2adab8bd0faf4075e4718c067ec8,1,response,2,generic,artifact,Blicket,squeaks,0.74,3,TRUE,TRUE
+6f6e2adab8bd0faf4075e4718c067ec8,1,response,3,generic,flower,Dax,has a black center,0.99,3,TRUE,TRUE
+736596d900bb45f1ccc616d9d3f80b1d,1,id,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+736596d900bb45f1ccc616d9d3f80b1d,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+736596d900bb45f1ccc616d9d3f80b1d,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+736596d900bb45f1ccc616d9d3f80b1d,1,response,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+736596d900bb45f1ccc616d9d3f80b1d,1,response,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+736596d900bb45f1ccc616d9d3f80b1d,1,response,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+74ab37dd909cb1d3a225cf140ac10004,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+74ab37dd909cb1d3a225cf140ac10004,1,id,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+74ab37dd909cb1d3a225cf140ac10004,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+74ab37dd909cb1d3a225cf140ac10004,1,response,1,generic,bird,Fep,has white wings,0.74,3,TRUE,TRUE
+74ab37dd909cb1d3a225cf140ac10004,1,response,2,generic,artifact,Blicket,squeaks,0.86,3,TRUE,TRUE
+74ab37dd909cb1d3a225cf140ac10004,1,response,3,generic,flower,Dax,has a black center,0.78,3,TRUE,TRUE
+7ff05c6caec0e456cf4e0d09f33e0103,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+7ff05c6caec0e456cf4e0d09f33e0103,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+7ff05c6caec0e456cf4e0d09f33e0103,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+7ff05c6caec0e456cf4e0d09f33e0103,1,response,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+7ff05c6caec0e456cf4e0d09f33e0103,1,response,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+7ff05c6caec0e456cf4e0d09f33e0103,1,response,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+8a3748f64ded4495b02345167a0bd9de,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+8a3748f64ded4495b02345167a0bd9de,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+8a3748f64ded4495b02345167a0bd9de,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+8a3748f64ded4495b02345167a0bd9de,1,response,1,generic,artifact,Blicket,squeaks,0.98,3,TRUE,TRUE
+8a3748f64ded4495b02345167a0bd9de,1,response,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+8a3748f64ded4495b02345167a0bd9de,1,response,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+8c7bb985024fdfe0a3fa81fd6cfad502,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+8c7bb985024fdfe0a3fa81fd6cfad502,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+8c7bb985024fdfe0a3fa81fd6cfad502,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+8c7bb985024fdfe0a3fa81fd6cfad502,1,response,1,generic,artifact,Blicket,squeaks,0.97,3,TRUE,TRUE
+8c7bb985024fdfe0a3fa81fd6cfad502,1,response,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+8c7bb985024fdfe0a3fa81fd6cfad502,1,response,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+9295889a4c2642d5ff952a7b9a89ada3,1,id,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+9295889a4c2642d5ff952a7b9a89ada3,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+9295889a4c2642d5ff952a7b9a89ada3,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+9295889a4c2642d5ff952a7b9a89ada3,1,response,1,generic,flower,Dax,has a black center,0.83,3,TRUE,TRUE
+9295889a4c2642d5ff952a7b9a89ada3,1,response,2,generic,bird,Fep,has white wings,0.84,3,TRUE,TRUE
+9295889a4c2642d5ff952a7b9a89ada3,1,response,3,generic,artifact,Blicket,squeaks,0.87,3,TRUE,TRUE
+9c539708c26be82c6c51dfdcc006b925,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+9c539708c26be82c6c51dfdcc006b925,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+9c539708c26be82c6c51dfdcc006b925,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+9c539708c26be82c6c51dfdcc006b925,1,response,1,generic,bird,Fep,has white wings,0.96,3,TRUE,TRUE
+9c539708c26be82c6c51dfdcc006b925,1,response,2,generic,flower,Dax,has a black center,0.96,3,TRUE,TRUE
+9c539708c26be82c6c51dfdcc006b925,1,response,3,generic,artifact,Blicket,squeaks,0.96,3,TRUE,TRUE
+a152ad05d02dfd73e89c43644ae1c2bc,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+a152ad05d02dfd73e89c43644ae1c2bc,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+a152ad05d02dfd73e89c43644ae1c2bc,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+a152ad05d02dfd73e89c43644ae1c2bc,1,response,1,generic,artifact,Blicket,squeaks,0.74,3,TRUE,TRUE
+a152ad05d02dfd73e89c43644ae1c2bc,1,response,2,generic,flower,Dax,has a black center,0.76,3,TRUE,TRUE
+a152ad05d02dfd73e89c43644ae1c2bc,1,response,3,generic,bird,Fep,has white wings,0.75,3,TRUE,TRUE
+a3623ffaecf1e89cbe218cd459dbc6e5,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+a3623ffaecf1e89cbe218cd459dbc6e5,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+a3623ffaecf1e89cbe218cd459dbc6e5,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+a3623ffaecf1e89cbe218cd459dbc6e5,1,response,1,generic,artifact,Blicket,squeaks,0.88,3,TRUE,TRUE
+a3623ffaecf1e89cbe218cd459dbc6e5,1,response,2,generic,flower,Dax,has a black center,0.75,3,TRUE,TRUE
+a3623ffaecf1e89cbe218cd459dbc6e5,1,response,3,generic,bird,Fep,has white wings,0.89,3,TRUE,TRUE
+bbb0ccc1a5e1178c73ff3168546753b1,1,id,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+bbb0ccc1a5e1178c73ff3168546753b1,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+bbb0ccc1a5e1178c73ff3168546753b1,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+bbb0ccc1a5e1178c73ff3168546753b1,1,response,1,generic,flower,Dax,has a black center,0.93,3,TRUE,TRUE
+bbb0ccc1a5e1178c73ff3168546753b1,1,response,2,generic,bird,Fep,has white wings,0.89,3,TRUE,TRUE
+bbb0ccc1a5e1178c73ff3168546753b1,1,response,3,generic,artifact,Blicket,squeaks,0.87,3,TRUE,TRUE
+bf110a9ab2557fabd5c74bcd7f9a5f35,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+bf110a9ab2557fabd5c74bcd7f9a5f35,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+bf110a9ab2557fabd5c74bcd7f9a5f35,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+bf110a9ab2557fabd5c74bcd7f9a5f35,1,response,1,generic,artifact,Blicket,squeaks,0.66,3,TRUE,TRUE
+bf110a9ab2557fabd5c74bcd7f9a5f35,1,response,2,generic,bird,Fep,has white wings,0.81,3,TRUE,TRUE
+bf110a9ab2557fabd5c74bcd7f9a5f35,1,response,3,generic,flower,Dax,has a black center,0.91,3,TRUE,TRUE
+c2ff5dc7163194acef2e0cb4619a71df,1,id,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+c2ff5dc7163194acef2e0cb4619a71df,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+c2ff5dc7163194acef2e0cb4619a71df,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+c2ff5dc7163194acef2e0cb4619a71df,1,response,1,generic,flower,Dax,has a black center,0.87,3,TRUE,TRUE
+c2ff5dc7163194acef2e0cb4619a71df,1,response,2,generic,bird,Fep,has white wings,0.87,3,TRUE,TRUE
+c2ff5dc7163194acef2e0cb4619a71df,1,response,3,generic,artifact,Blicket,squeaks,0.98,3,TRUE,TRUE
+cbb140de1834c495fa3642f1e32e142f,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+cbb140de1834c495fa3642f1e32e142f,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+cbb140de1834c495fa3642f1e32e142f,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+cbb140de1834c495fa3642f1e32e142f,1,response,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+cbb140de1834c495fa3642f1e32e142f,1,response,2,generic,bird,Fep,has white wings,0.98,3,TRUE,TRUE
+cbb140de1834c495fa3642f1e32e142f,1,response,3,generic,flower,Dax,has a black center,0.97,3,TRUE,TRUE
+cc414b890ae7bc8037e198a1e9b36393,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+cc414b890ae7bc8037e198a1e9b36393,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+cc414b890ae7bc8037e198a1e9b36393,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+cc414b890ae7bc8037e198a1e9b36393,1,response,1,generic,artifact,Blicket,squeaks,0.78,3,TRUE,TRUE
+cc414b890ae7bc8037e198a1e9b36393,1,response,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+cc414b890ae7bc8037e198a1e9b36393,1,response,3,generic,bird,Fep,has white wings,0.95,3,TRUE,TRUE
+d1338b2812359f06a72f0aeda647bfef,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+d1338b2812359f06a72f0aeda647bfef,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+d1338b2812359f06a72f0aeda647bfef,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+d1338b2812359f06a72f0aeda647bfef,1,response,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+d1338b2812359f06a72f0aeda647bfef,1,response,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+d1338b2812359f06a72f0aeda647bfef,1,response,3,generic,artifact,Blicket,squeaks,0.8,3,TRUE,TRUE
+d2acd70dd344fc1289722083cfcda7e0,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+d2acd70dd344fc1289722083cfcda7e0,1,id,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+d2acd70dd344fc1289722083cfcda7e0,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+d2acd70dd344fc1289722083cfcda7e0,1,response,1,generic,bird,Fep,has white wings,0.8,3,TRUE,TRUE
+d2acd70dd344fc1289722083cfcda7e0,1,response,2,generic,artifact,Blicket,squeaks,0.62,3,TRUE,TRUE
+d2acd70dd344fc1289722083cfcda7e0,1,response,3,generic,flower,Dax,has a black center,0.7,3,TRUE,TRUE
+e1fc1f39a7fb6628601bb4bed93cc7bf,1,id,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+e1fc1f39a7fb6628601bb4bed93cc7bf,1,id,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+e1fc1f39a7fb6628601bb4bed93cc7bf,1,id,3,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+e1fc1f39a7fb6628601bb4bed93cc7bf,1,response,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+e1fc1f39a7fb6628601bb4bed93cc7bf,1,response,2,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+e1fc1f39a7fb6628601bb4bed93cc7bf,1,response,3,generic,artifact,Blicket,squeaks,0.9,3,TRUE,TRUE
+e40220da68a1619ff5900d32036179d9,1,id,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+e40220da68a1619ff5900d32036179d9,1,id,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+e40220da68a1619ff5900d32036179d9,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+e40220da68a1619ff5900d32036179d9,1,response,1,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+e40220da68a1619ff5900d32036179d9,1,response,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+e40220da68a1619ff5900d32036179d9,1,response,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+e706ebeeb8c4544a6e380da4728d60b5,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+e706ebeeb8c4544a6e380da4728d60b5,1,id,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+e706ebeeb8c4544a6e380da4728d60b5,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+e706ebeeb8c4544a6e380da4728d60b5,1,response,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+e706ebeeb8c4544a6e380da4728d60b5,1,response,2,generic,artifact,Blicket,squeaks,0.99,3,TRUE,TRUE
+e706ebeeb8c4544a6e380da4728d60b5,1,response,3,generic,flower,Dax,has a black center,0.98,3,TRUE,TRUE
+eac605a670b8d8beb74503980aea1f55,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+eac605a670b8d8beb74503980aea1f55,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+eac605a670b8d8beb74503980aea1f55,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+eac605a670b8d8beb74503980aea1f55,1,response,1,generic,artifact,Blicket,squeaks,0.75,3,TRUE,TRUE
+eac605a670b8d8beb74503980aea1f55,1,response,2,generic,flower,Dax,has a black center,0.93,3,TRUE,TRUE
+eac605a670b8d8beb74503980aea1f55,1,response,3,generic,bird,Fep,has white wings,0.76,3,TRUE,TRUE
+eb7f0f5373b533b5a577cab81d7f2551,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+eb7f0f5373b533b5a577cab81d7f2551,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+eb7f0f5373b533b5a577cab81d7f2551,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+eb7f0f5373b533b5a577cab81d7f2551,1,response,1,generic,artifact,Blicket,squeaks,0.72,3,TRUE,TRUE
+eb7f0f5373b533b5a577cab81d7f2551,1,response,2,generic,flower,Dax,has a black center,0.71,3,TRUE,TRUE
+eb7f0f5373b533b5a577cab81d7f2551,1,response,3,generic,bird,Fep,has white wings,0.98,3,TRUE,TRUE
+ecac4b91285d44f0d5f1a964e71a82aa,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+ecac4b91285d44f0d5f1a964e71a82aa,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+ecac4b91285d44f0d5f1a964e71a82aa,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+ecac4b91285d44f0d5f1a964e71a82aa,1,response,1,generic,artifact,Blicket,squeaks,0.73,3,TRUE,TRUE
+ecac4b91285d44f0d5f1a964e71a82aa,1,response,2,generic,flower,Dax,has a black center,0.99,3,TRUE,TRUE
+ecac4b91285d44f0d5f1a964e71a82aa,1,response,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+f2b68acb6bca0466c656bc8853dfe7ae,1,id,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+f2b68acb6bca0466c656bc8853dfe7ae,1,id,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+f2b68acb6bca0466c656bc8853dfe7ae,1,id,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+f2b68acb6bca0466c656bc8853dfe7ae,1,response,1,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+f2b68acb6bca0466c656bc8853dfe7ae,1,response,2,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+f2b68acb6bca0466c656bc8853dfe7ae,1,response,3,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+f3c1172b5939af26adaf04c9d84972b1,1,id,1,generic,bird,Fep,has white wings,1,3,TRUE,TRUE
+f3c1172b5939af26adaf04c9d84972b1,1,id,2,generic,artifact,Blicket,squeaks,1,3,TRUE,TRUE
+f3c1172b5939af26adaf04c9d84972b1,1,id,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
+f3c1172b5939af26adaf04c9d84972b1,1,response,1,generic,bird,Fep,has white wings,0.99,3,TRUE,TRUE
+f3c1172b5939af26adaf04c9d84972b1,1,response,2,generic,artifact,Blicket,squeaks,0.87,3,TRUE,TRUE
+f3c1172b5939af26adaf04c9d84972b1,1,response,3,generic,flower,Dax,has a black center,1,3,TRUE,TRUE
