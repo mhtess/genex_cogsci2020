@@ -1,5 +1,5 @@
 ---
-title: "How many observations is one generic worth? (CogSci 2020)"
+title: "Experiment 1 analysis and visualizations"
 author: "MH Tessler"
 date: "1/31/2020"
 output: github_document
@@ -116,6 +116,7 @@ df.trials.filtered.mem <- df.trials.removeDuplicateParticipants %>%
   left_join(., df.id.catch) %>% 
   filter(pass)
 ```
+
 
 ```{r test memory check}
 df.trials.filtered.mem %>%
@@ -401,6 +402,7 @@ df.bs.trial_num <- df.trials.filtered.recoded %>%
   group_by(condition, trial_num) %>%
   tidyboot_mean(column = response)
 ```
+
 ```{r}
 bar.width = 0.7
 
