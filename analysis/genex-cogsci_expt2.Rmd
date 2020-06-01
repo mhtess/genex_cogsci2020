@@ -1,0 +1,536 @@
+---
+title: "Experiment 2 analysis and visualizations"
+author: "MH Tessler"
+date: "1/31/2020"
+output: github_document
+---
+
+
+```{r libraries}
+library(tidyverse)
+library(jsonlite)
+library(viridis)
+library(tidyboot)
+# library(brms)
+# library(lme4)
+# library(lmerTest)
+library(ggridges)
+library(ggstance)
+#library(rwebppl)
+library(knitr)
+library(ggthemes)
+theme_set(theme_few())
+```
+
+
+```{r read data from csv}
+df.trials <- read_csv("../data/expt2/genex-cogsci_expt2-trials.csv")
+df.subject <- read_csv("../data/expt2/genex-cogsci_expt2-participant_information.csv")
+df.attention <- read_csv("../data/expt2/genex-cogsci_expt2-sound_check.csv")
+```
+
+# Attention checks and other exclusions
+
+Unlike Experiment 1, we did not have the issue with multiple submitters.
+
+```{r submissions per worker}
+df.trials %>% 
+  group_by(workerid, condition) %>% 
+  summarize(n = n() / 6) %>% ungroup() %>% 
+  group_by(workerid) %>% 
+  summarize(n = sum(n)) -> submissions_per_worker
+
+# how many submissions were by people who did it more than once?
+submissions_per_worker %>% 
+  filter(n > 1) %>% 
+  ungroup() %>% summarize(sum(n))
+
+# how many submissions in total?
+submissions_per_worker %>% 
+  ungroup() %>% 
+  summarize(total_subj = sum(n))
+```
+
+
+## Memory check
+
+Proportion of correct IDs broken down by item. 
+As in Expt. 1, artifact is a little harder to discriminate in memory check.
+
+```{r}
+df.trials %>%
+  filter(trial_type == 'id') %>%
+  group_by(kind_type) %>%
+  summarize(n_correct = sum(response) / n()) %>%
+  kable()
+```
+
+
+```{r memory check performance}
+df.trials %>%
+  filter(trial_type == 'id') %>%
+  group_by(workerid, condition) %>%
+  summarize(n_correct = sum(response)) %>%
+  ungroup() %>%
+  group_by(n_correct) %>%
+  count() -> df.trials.n_correct.count
+
+df.trials.n_correct.count %>% 
+  kable()
+```
+
+
+Remove participants who do not answer all 3 correctly.
+
+```{r memory check}
+df.id.catch <- df.trials %>%
+  filter(trial_type == 'id') %>%
+  group_by(workerid, condition) %>%
+  summarize(n_correct = sum(response), # no of memory check trials answered correctly
+            pass = n_correct == 3) # must answer all 3 to be included
+
+df.trials.filtered.mem <- df.trials %>%
+  left_join(., df.id.catch) %>% 
+  filter(pass)
+
+glimpse(df.trials.filtered.mem)
+```
+
+
+```{r test memory check}
+df.trials.filtered.mem %>%
+  filter(trial_type == 'id') %>%
+  group_by(workerid) %>%
+  summarize(n = n()) %>%
+  ungroup() %>%
+  group_by(n) %>%
+  count()
+```
+
+
+## Sound check
+
+"skyscraper" was the distractor word on the screen that a participant would be drawn to if they are not actually reading the text. we filter based on responses of "skyscraper" or a misspelling.
+
+```{r sound check}
+# Workers pass sound check
+df.attention %>%
+  group_by(workerid, exptid) %>%
+  summarize(test_word = first(test_word),
+  response = first(response)) %>%
+  mutate(response = tolower(response)) %>%
+  rowwise() %>%
+  mutate(pass_sound = !(response %in% c("skyscraper", "skycraper"))) -> df.speaker.fail
+
+# how many fail?
+sum(!df.speaker.fail$pass_sound)
+
+## check what participants wrote when they got it wrong
+# df.speaker.fail %>% filter(!pass_sound) %>% View()
+df.trials.filtered <- df.trials.filtered.mem %>%
+  left_join(., df.speaker.fail %>% select(workerid,pass_sound)) %>% 
+  filter(pass, pass_sound)
+
+glimpse(df.trials.filtered)
+```
+
+
+## Number of Participants per condition
+
+```{r}
+length(unique(df.trials.filtered$workerid)) # data frame after exlcusions
+
+length(unique(df.trials$workerid)) # original data frame
+
+df.trials.filtered %>% 
+  select(workerid, condition, kind_type, trial_type) %>%
+  filter(kind_type == "bird", trial_type == "response") %>%
+  group_by(condition) %>%
+  count() %>%
+  kable()
+```
+
+
+
+
+
+### Correct ID by item
+
+
+
+Participants per condition
+
+```{r}
+df.trials %>% 
+  select(workerid, condition, kind_type, trial_type) %>%
+  filter(kind_type == "bird", trial_type == "response") %>%
+  group_by(condition) %>%
+  count()
+```
+
+
+```{r load generic only data from expt1}
+
+df.trials.filtered.expt1.generic <- read_csv("../data/expt2/genex-cogsci_expt1-genericOnly.csv")
+
+
+# check number of trials per participant to ensure duplicate submitters were already removed
+df.trials.filtered.expt1.generic %>%
+  filter(trial_type == 'id') %>%
+  group_by(workerid, condition) %>%
+  count() %>%
+  ungroup() %>%
+  group_by(n) %>%
+  count()
+
+
+df.trials.filtered.wGen <- df.trials.filtered %>%
+  bind_rows(., df.trials.filtered.expt1.generic)
+
+# write_csv(df.trials.filtered.wGen, path = "../data/expt2/genex-cogsci_expt2wGen-filtered.csv")
+```
+
+# Visualization and analysis
+
+```{r relevel}
+# df.trials.filtered.wGen <- read_csv( "../data/expt2/genex-cogsci_expt2wGen-filtered.csv")
+
+df.trials.filtered.recoded <- df.trials.filtered.wGen %>%
+  filter(trial_type == 'response') %>%
+  mutate(condition = factor(condition,
+                            levels = c("accidental",
+                                       "2accidental",
+                                       "3accidental",
+                                       "4accidental",
+                                       "pedagogical",
+                                       "2pedagogical",
+                                       "3pedagogical",
+                                       "4pedagogical",
+                                       "generic"),
+                            labels = c("1x Accidental",
+                                       "2x Accidental",
+                                       "3x Accidental",
+                                       "4x Accidental",
+                                       "1x Pedagogical",
+                                       "2x Pedagogical",
+                                       "3x Pedagogical",
+                                       "4x Pedagogical",
+                                       "Generic")))
+
+## check: Number of responses per subject
+df.trials.filtered.recoded %>%
+  group_by(workerid) %>%
+  summarize(n = n()) %>%
+  ungroup() %>%
+  group_by(n) %>%
+  count()
+```
+
+
+Compute bootstrapped 95% confidence intervals, by condition and by-itemXcondition
+
+```{r CIs}
+## 95 CIs
+df.bs <- df.trials.filtered.recoded %>%
+  group_by(condition) %>%
+  tidyboot_mean(column = response) %>%
+  ungroup() %>%
+  mutate(condition = factor(condition))
+
+df.bs.item <- df.trials.filtered.recoded %>%
+  group_by(condition, kind_type, feature_label) %>%
+  tidyboot_mean(column = response) %>%
+  ungroup() %>%
+  mutate(condition = factor(condition),
+         kind_type = factor(kind_type, levels = c("bird", "flower", "artifact")))
+```
+
+## Ridge distribution plot (Figure 3B)
+
+```{r}
+ggplot(df.trials.filtered.recoded, 
+       aes(x = response, y = condition, fill = ..x..)) +
+  geom_density_ridges_gradient(
+    jittered_points = T, alpha = 0.8, scale = 0.9,
+    position = position_points_jitter(width = 0.01, height = 0),
+    point_shape = '|', point_size = 2.5, point_alpha = 0.3,
+    rel_min_height = 0.01, gradient_lwd = 1,
+    stat = 'binline', bins = 25, draw_baseline = F
+  ) +
+  geom_linerangeh(data = df.bs,
+    inherit.aes = F,
+    aes(xmin = ci_lower, xmax = ci_upper,
+        y = as.numeric(condition)+0.5),
+    size = 1.25, color = 'black')+
+  geom_vline(data = df.bs %>% filter(condition == "Generic"), 
+             linetype = 2, alpha = 0.4,
+             aes(xintercept = ci_lower))+
+  geom_vline(data = df.bs %>% filter(condition == "Generic"), 
+             linetype = 2, alpha = 0.4,
+             aes(xintercept = ci_upper))+
+  geom_point(data = df.bs,
+    inherit.aes = F,
+    aes(x = mean,
+        y = as.numeric(condition)+0.5),
+    size = 3, color = 'black', shape = 3)+
+  scale_x_continuous(expand = c(0.01, 0), 
+                     limits = c(0, 1.05), 
+                     breaks = c(0, 0.25, 0.5, 0.75, 1)) +
+  scale_y_discrete(expand = c(0.01, 0)) +
+  scale_fill_viridis(name = "Implied Prevalence", option = "D",
+                     breaks = c(0, 1)) +
+  guides(fill = F)+
+  theme(axis.title.y = element_blank(),
+        axis.title.x = element_text(hjust = 0.5, vjust = 0))+
+  labs(x = "Probability of Future Instance having Property")
+
+
+# ggsave("../paper/figs/genex-expt2.pdf",
+#        width = 5, height = 4.5)
+```
+
+## By-item bar plot (Figure 4A)
+
+```{r}
+bar.width = 0.7
+
+df.bs.item %>%
+  ggplot(., aes(x = condition, fill = kind_type, 
+                y = mean, ymin = ci_lower,
+                ymax = ci_upper)) +
+  geom_hline(data = df.bs %>% filter(condition == "Generic"),
+             linetype = 2, alpha = 0.4,
+             aes(yintercept = ci_lower))+
+  geom_hline(data = df.bs %>% filter(condition == "Generic"),
+             linetype = 2, alpha = 0.4,
+             aes(yintercept = ci_upper))+
+  geom_col(color = 'black', width = bar.width, position = position_dodge(bar.width),
+           alpha = 0.5)+
+  geom_linerange( position = position_dodge(bar.width))+
+  coord_flip()+
+   guides(fill = guide_legend(reverse = T))+
+  labs(y = "Probability of Future Instance having Property", x = "",
+       fill = "item")+
+  theme(legend.position = 'bottom')
+
+# ggsave("../paper/figs/genex_expt2_byItem_bars_reordered.pdf",
+#        width = 4.7, height = 4.2)
+
+```
+
+
+# Other plots
+
+## Bars
+
+```{r}
+df.bs %>%
+  ggplot(., aes(x = condition, y = mean, ymin = ci_lower,
+                ymax = ci_upper)) +
+  geom_col(color = 'black', fill = 'white')+
+  geom_linerange()+
+  coord_flip()
+```
+
+## Histograms
+
+```{r}
+df.trials.filtered.recoded %>%
+  ggplot(., aes(x = response))+
+  geom_histogram()+
+  facet_wrap(~condition, nrow = 2)+
+  scale_x_continuous(breaks = c(0, 1))
+```
+
+
+## By-item plots
+
+### by-item Histograms
+
+```{r}
+df.trials.filtered.recoded %>%
+  ggplot(., aes(x = response))+
+  geom_histogram()+
+  facet_grid(feature_label~condition)
+```
+
+### by-item ridge plots
+
+```{r}
+df.trials.filtered.recoded %>%
+  mutate(
+    kind_type = factor(kind_type, levels = c("bird", "flower", "artifact"))
+    ) %>%
+  ggplot(., 
+       aes(x = response, y = condition, fill = ..x..)) +
+  geom_density_ridges_gradient(
+    jittered_points = T, alpha = 0.8, scale = 0.9,
+    position = position_points_jitter(width = 0.01, height = 0),
+    point_shape = '|', point_size = 2.5, point_alpha = 0.3,
+    rel_min_height = 0.01, gradient_lwd = 1,
+    stat = 'binline', bins = 25, draw_baseline = F
+  ) +
+  geom_linerangeh(data = df.bs.item,
+    inherit.aes = F,
+    aes(xmin = ci_lower, xmax = ci_upper,
+        y = as.numeric(condition)+0.4),
+    size = 1.25, color = 'black')+
+  geom_vline(data = df.bs.item %>% filter(condition == "Generic"), 
+             #inherit.aes = F, 
+             linetype = 2, alpha = 0.4,
+             aes(xintercept = ci_lower))+
+  geom_vline(data = df.bs.item %>% filter(condition == "Generic"), 
+             #inherit.aes = F, 
+             linetype = 2, alpha = 0.4,
+             aes(xintercept = ci_upper))+
+  geom_point(data = df.bs.item,
+    inherit.aes = F,
+    aes(x = mean,
+        y = as.numeric(condition)+0.4),
+    size = 3, color = 'black', shape = 3)+
+  scale_x_continuous(expand = c(0.01, 0), 
+                     limits = c(0, 1.02), 
+                     breaks = c(0, 1)) +
+  scale_y_discrete(expand = c(0.01, 0)) +
+  scale_fill_viridis(name = "Implied Prevalence", option = "D",
+                     breaks = c(0, 1)) +
+  guides(fill = F)+
+  facet_wrap(~kind_type, nrow = 1)+
+  theme(axis.title.y = element_blank(),
+        axis.title.x = element_text(hjust = 0.5, vjust = 0))+
+  labs(x = "Probability of Future Instance having Property")
+
+
+```
+
+
+## By-trial num plots
+
+### By-trial num histograms
+
+```{r}
+df.trials.filtered.recoded %>%
+  ggplot(., aes(x = response))+
+  geom_histogram()+
+  facet_grid(trial_num~condition)
+```
+
+
+### By-trial num bar plots
+
+```{r}
+df.bs.trial_num <- df.trials.filtered.recoded %>%
+  group_by(condition, trial_num) %>%
+  tidyboot_mean(column = response)
+```
+
+```{r}
+bar.width = 0.7
+
+df.bs.trial_num %>%
+  mutate(trial_num = factor(trial_num)) %>%
+  ggplot(., aes(x = condition, fill = trial_num, 
+                y = mean, ymin = ci_lower,
+                ymax = ci_upper)) +
+  geom_hline(data = df.bs %>% filter(condition == "Generic"),
+             linetype = 2, alpha = 0.4,
+             aes(yintercept = ci_lower))+
+  geom_hline(data = df.bs %>% filter(condition == "Generic"),
+             linetype = 2, alpha = 0.4,
+             aes(yintercept = ci_upper))+
+  geom_col(color = 'black', width = bar.width, position = position_dodge(bar.width),
+           alpha = 0.5)+
+  geom_linerange( position = position_dodge(bar.width))+
+  coord_flip()+
+   guides(fill = guide_legend(reverse = T))+
+  labs(y = "Probability of Future Instance having Property", x = "",
+       fill = "item")+
+  theme(legend.position = 'bottom')
+```
+
+# Regression
+
+### Forward difference
+
+
+```{r}
+
+my.forward.diff = matrix(
+  c(7/8, -1/8, -1/8, -1/8, -1/8, -1/8, -1/8, -1/8, 
+    6/8, 2/8, -(4/3)/8, -(4/3)/8, -(4/3)/8, -(4/3)/8, -(4/3)/8, -(4/3)/8, 
+    5/8, 3/8, 3/8, -11/40, -11/40, -11/40, -11/40, -11/40,
+    1/2, 1/2, 1/2, 1/2, -1/2, -1/2, -1/2, -1/2,
+    11/40, 11/40, 11/40, 11/40, 11/40, -3/8, -3/8, -5/8,
+    (4/3)/8, (4/3)/8, (4/3)/8, (4/3)/8, (4/3)/8, (4/3)/8, -2/8, -6/8,
+    1/8, 1/8, 1/8, 1/8, 1/8, 1/8, 1/8, -7/8),
+      ncol = 7)
+
+
+contrasts(df.trials.filtered.recoded$condition) <- my.forward.diff
+
+
+rs.lm <- lmer(response ~ 
+       condition + (1 | workerid) + (1 | singular), data = df.trials.filtered.recoded)
+
+summary(rs.lm)
+```
+
+### Dummy coding
+
+```{r}
+df.trials.filtered.recoded.genDummy <- df.trials.filtered.recoded %>%
+  mutate(condition = factor(condition,
+                            levels = c("Generic",
+                                       "1x Accidental",
+                                       "1x Pedagogical",
+                                       "2x Accidental",
+                                       "2x Pedagogical",
+                                       "3x Accidental",
+                                       "3x Pedagogical",
+                                       "Generic \n+ 1x Pedagogical")))
+
+contrasts(df.trials.filtered.recoded.genDummy$condition) 
+
+rs.lm.dummy <- lmer(response ~ condition + (1 | workerid) + 
+                      (1 | singular), data = df.trials.filtered.recoded.genDummy)
+
+summary(rs.lm.dummy)
+```
+
+
+```{r}
+rs.brm.dummy <- brm(response ~ condition + (1 | workerid) + 
+                      (1 | singular), 
+                    data = df.trials.filtered.recoded.genDummy,
+                    chains = 2, cores = 2)
+summary(rs.brm.dummy)
+```
+
+```{r}
+rs.brm.dummy <- brm(response ~ condition + (1 | workerid) + 
+                      (1 | singular), 
+                    data = df.trials.filtered.recoded.genDummy,
+                    chains = 2, cores = 2)
+summary(rs.brm.dummy)
+```
+
+```{r}
+rs.brm.dummy.beta <- brm(response ~ condition + (1 | workerid) + 
+                      (1 | singular), 
+                    data = df.trials.filtered.recoded.genDummy %>%
+                      mutate(response = ifelse(response == 1, 0.999, 
+                                               ifelse(response == 0, 0.001, response))),
+                    chains = 2, cores = 2, family = Beta()
+                    )
+summary(rs.brm.dummy.beta)
+```
+
+```{r}
+rs.brm.dummy.betaInfl <- brm(response ~ condition + (1 | workerid) + 
+                      (1 | singular), 
+                    data = df.trials.filtered.recoded.genDummy,
+                    chains = 2, cores = 2, family = zero_one_inflated_beta()
+                    )
+summary(rs.brm.dummy.betaInfl)
+```
+
