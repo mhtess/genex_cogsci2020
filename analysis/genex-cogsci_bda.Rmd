@@ -1,0 +1,609 @@
+---
+title: "genex-cogsci_bda"
+author: "MH Tessler"
+date: "5/28/2020"
+output: github_document
+---
+
+```{r}
+library(rwebppl)
+library(tidyverse)
+```
+
+
+# Bayesian Analysis using WebPPL
+
+First, we compute the marginal likelihood of the data for each condition separately, assuming a 2-component mixture of Betas distribution. (This 2-component structure can be indendently motivated by compute this marginal likelihood assuming different numbers of components e.g., 1 or 3, and doing the Bayes Factor comparison between the different numbers-of-components models).
+
+Second, we  compute the marginal likelihood of the data for each condition paired with the generic only condition of Expt. 1, assuming that both conditions came from the same distribution (i.e., the same 2-component mixture-of-Betas).
+
+We then logsumexp those loglikelihoods to compute a Bayes Factor for each hypothesis to decide upon a fixed link function.
+
+## Marginal Likelihood
+
+### H1: Different distributions
+
+Note: These marginal likelihoods can also serve to compare the likelihood of the data assuming different mixtures (i.e., 1 Beta, 2 Betas, 3 Betas). This can be done by changing `n_components` to include more values (e.g., 1, 2, 3). 
+
+```{r likelihood Different Distributions, eval = F}
+
+df.trials.filtered <- read_csv("../data/expt1/genex-cogsci_expt1-filtered.csv")
+# df.trials.filtered <- read_csv("../data/expt2/genex-cogsci_expt2wGen-filtered.csv")
+
+
+#n_components <- c(1, 2, 3)
+n_components <- c(2)
+# steps = 25k --> 30s
+rs.wp.ais <- data.frame()
+
+df.filtered.toPass <- df.trials.filtered %>%
+  filter(trial_type == "response") %>%
+  rowwise() %>%
+  mutate(avoided_endval = ifelse(response == 1, 0.999, 
+                                 ifelse (response == 0, 0.001, response)))
+
+all_conditions <- unique(df.filtered.toPass$condition)
+
+t0.start <- Sys.time()
+
+for (cndtn in all_conditions){
+  print(cndtn)
+  
+  df.filtered.toPass.condition <- df.filtered.toPass %>%
+    filter(condition == cndtn)
+
+  for (n_c in n_components){
+    t1 <- Sys.time()
+    
+    rs.wp.ais.i <- webppl(
+      program_file = "webppl/mixture_of_betas.wppl",
+      data = list(responses = df.filtered.toPass.condition,
+                  n_components = n_c,
+                  ais = T,
+                  ais_samples = 1,
+                  ais_steps = 500), # run on 5,000,000 steps. takes ~ 8 hours to loop through.
+      chains = 3,
+      cores = 3
+      )
+    
+    bind_rows(rs.wp.ais, 
+              data.frame(marg_ll = rs.wp.ais.i, n_c = n_c, condition = cndtn, row.names = NULL) %>%
+                  mutate(iter = row_number())) -> rs.wp.ais 
+    t2 <- Sys.time()
+    print(paste("n components =", n_c, " time=", t2-t1))
+  }
+  
+}
+
+rs.wp.ais
+
+t0.end <- Sys.time()
+print(paste("total time=", t0.end-t0.start))
+
+# rs.wp.ais %>%
+#   write_csv(., path = "webppl/output/ais_expt1_allConds_nComponents_250k_3acc5m_05292020_final.csv")
+```
+
+Load results for either Expt. 1 or Expt. 2
+
+```{r load diff distributions likelihood results}
+ rs.wp.ais <- read_csv(file = "webppl/output/ais_expt1_allConds_nComponents_250k_3acc5m_05292020_final.csv")
+ #rs.wp.ais <- read_csv(file = "webppl/output/ais_expt2_allConds_nComponents_100k_05292020_final.csv")
+```
+
+#### For comparing different `n_components` models
+
+```{r compare likelihoods of different mixture}
+rs.wp.ais %>%
+  rowwise() %>%
+  mutate(ll = exp(marg_ll)) %>%
+  ungroup() %>%
+  group_by(condition, n_c) %>%
+  summarize(mean_ll = mean(ll),
+            log_mean_llh = log(mean_ll)) %>% # average likelihood over chains
+  ungroup() %>%
+  group_by(n_c) %>%
+  summarize(marg_llh = sum(log_mean_llh)) # sum likelihoods over conditions
+  
+rs.wp.ais %>% 
+  group_by(n_c, iter) %>%
+  summarize(marg_llh = sum(marg_ll)) %>% 
+  kable()
+```
+
+```{r bayes factors of different mixtures}
+rs.wp.ais %>%
+  rowwise() %>%
+  mutate(ll = exp(marg_ll)) %>%
+  ungroup() %>%
+  group_by(condition, n_c) %>%
+  summarize(mean_ll = mean(ll),
+            log_mean_llh = log(mean_ll)) %>% # average likelihood over chains
+  ungroup() %>%
+  group_by(n_c) %>%
+  summarize(marg_llh = sum(log_mean_llh)) %>% # sum likelihoods over conditions
+  spread(n_c, marg_llh) %>%
+  gather(n_c, val, -`2`) %>%
+  mutate(log_bf = `2` - val,
+         bf = exp(log_bf)) %>%
+  select(n_c, bf, log_bf) %>%
+  mutate(n_c = paste("N = 2 vs. N = ", n_c, " Component", sep = "")) %>%
+  rename("Model Comparison" = n_c,
+         "Log BF" = log_bf,
+         "BF"= bf) %>%
+  write_csv(., path = "../writing/cogsci20/output_from_r/n_component_bf.csv")
+```
+
+
+### H2: Same distribution 
+
+Above, we have the marginal likelihoods for fitting 2 component Mixtures of Betas to each condition. Now we examine the marginal likelihoods for fitting a single 2-component Mixture-of-Betas to the generic condition + other condition. This will tell us how well the generic + [other] conditions are modeled by the same generative process.
+
+```{r likelihood Same Distributions, eval = F}
+
+n_c <- 2
+# steps = 25k --> 30s
+rs.wp.ais_2cond <- data.frame()
+
+df.filtered.toPass <- df.trials.filtered %>%
+  filter(trial_type == "response") %>%
+  rowwise() %>%
+  mutate(avoided_endval = ifelse(response == 1, 0.999, 
+                                 ifelse (response == 0, 0.001, response)))
+
+all_conditions <- unique(df.filtered.toPass$condition)
+non_generic_conditions <- all_conditions[all_conditions != "generic"]
+
+for (cndtn in non_generic_conditions){
+  t1 <- Sys.time()
+  print(cndtn)
+  
+  df.filtered.toPass.condition <- df.filtered.toPass %>%
+    filter(condition %in% c(cndtn, "generic"))
+
+
+  rs.wp.ais.i <- webppl(
+    program_file = "webppl/mixture_of_betas.wppl",
+    data = list(responses = df.filtered.toPass.condition,
+                n_components = n_c,
+                ais = T,
+                ais_samples = 1,
+                ais_steps = 5000000),
+    chains = 3,
+    cores = 3
+    )
+    
+    bind_rows(rs.wp.ais_2cond, 
+              data.frame(marg_ll = rs.wp.ais.i, n_c = n_c, condition = cndtn, row.names = NULL) %>%
+                  mutate(iter = row_number())) -> rs.wp.ais_2cond 
+    t2 <- Sys.time()
+    print(paste("n components =", n_c, " time=", t2-t1))
+
+}
+
+
+# rs.wp.ais_2cond %>%
+#   write_csv(., path = "webppl/output/ais_expt1_2conds_allConds_nComponents_100k_3acc5m_05292020_final.csv")
+# write_csv(rs.wp.ais_2cond, path = "webppl/output/ais_2conds_allConds_nComponents_50k.csv")
+```
+
+## Bayes Factor
+
+
+```{r load same distributions likelihood results}
+rs.wp.ais <- read_csv(file = "webppl/output/final/ais_expt1_allConds_nComponents_250k_3acc5m_05292020_final.csv")
+rs.wp.ais_2cond <- read_csv(file = "webppl/output/final/ais_expt1_2conds_allConds_nComponents_100k_3acc5m_05292020_final.csv")
+# rs.wp.ais <- read_csv(file = "webppl/output/ais_allConds_nComponents_5000k.csv")
+```
+
+
+```{r}
+rs.wp.ais_2cond %>%
+  group_by(condition, n_c) %>%
+  summarize(mean_marg_ll = mean(marg_ll)) -> rs.ml.same_distribution
+
+rs.wp.ais %>%
+  filter(n_c == 2) %>%
+  group_by(condition) %>%
+  summarize(mean_marg_ll = mean(marg_ll)) -> rs.ml.ind_distribution
+
+cbind(rs.ml.ind_distribution %>%
+  filter(condition != "generic"),
+  rs.ml.ind_distribution %>%
+    filter(condition == "generic") %>%
+    rename(gen = mean_marg_ll) %>%
+    select(-condition)) %>%
+  mutate(total_marg_ll = mean_marg_ll + gen) -> rs.sum_ml.ind_distribution
+
+
+left_join(
+  rs.ml.same_distribution %>%
+    rename(same_dist = mean_marg_ll),
+  rs.sum_ml.ind_distribution %>%
+    rename(diff_dist = total_marg_ll)
+) %>%
+  rowwise() %>%
+  mutate(log_bf = same_dist - diff_dist,
+         bf_gen_equal_obs = exp(log_bf)) %>%
+  select(condition, bf_gen_equal_obs, log_bf) %>%
+  rename(bf = bf_gen_equal_obs, logbf = log_bf) %>%
+  mutate(condition = factor(condition, levels = c("accidental", "2accidental", "3accidental", "4accidental",
+                                                  "pedagogical", "2pedagogical", "3pedagogical", "4pedagogical",
+                                                  "pedageneric"),
+                            labels = c("1 Accidental", "2 Accidental", "3 Accidental", "4 Accidental",
+                                       "1 Pedagogical", "2 Pedagogical", "3 Pedagogical", "4 Pedagogical",
+                                       "Generic + 1 Pedagogical"))) %>%
+  arrange(condition) %>%
+  kable()# %>%
+  #write_csv(., path = "../paper/output_from_r/n_obs_expt1_bf_100k_3acc5m_100k_final.csv")
+```
+
+
+
+
+Chain variability
+
+Note: It's somewhat arbitrary to compare variability of Bayes Factors by chain since the likelihood calculation for each hypothesis is done independently (i.e., chain 1 for H1 is different than Chain 1 for H2). Never the less, it is some measure of the variability of the estimate.
+
+```{r bf variability by chain}
+#rs.wp.ais_2cond <- read_csv(file = "webppl/output/ais_2conds_allConds_nComponents_250k.csv")
+
+rs.wp.ais_2cond %>%
+  group_by(condition, n_c, iter) %>%
+  summarize(mean_marg_ll = mean(marg_ll)) -> rs.ml.same_distribution
+
+rs.wp.ais %>%
+  filter(n_c == 2) %>%
+  group_by(condition, iter) %>%
+  summarize(mean_marg_ll = mean(marg_ll)) -> rs.ml.ind_distribution
+
+left_join(rs.ml.ind_distribution %>%
+  filter(condition != "generic"),
+  rs.ml.ind_distribution %>%
+    filter(condition == "generic") %>%
+    rename(gen = mean_marg_ll) %>%
+    ungroup() %>%
+    select(-condition)) %>%
+  mutate(total_marg_ll = mean_marg_ll + gen) -> rs.sum_ml.ind_distribution
+
+
+left_join(
+  rs.ml.same_distribution %>%
+    rename(same_dist = mean_marg_ll),
+  rs.sum_ml.ind_distribution %>%
+    rename(diff_dist = total_marg_ll)
+) %>%
+  rowwise() %>%
+  mutate(log_bf = same_dist - diff_dist,
+         bf_gen_equal_obs = exp(log_bf)) %>%
+  select(condition, bf_gen_equal_obs, log_bf) %>%
+  rename(bf = bf_gen_equal_obs, logbf = log_bf) %>%
+  mutate(condition = factor(condition, levels = c("accidental", "2accidental", "3accidental", "4accidental",
+                                                  "pedagogical", "2pedagogical", "3pedagogical", "4pedagogical",
+                                                  "pedageneric"),
+                            labels = c("1 Accidental", "2 Accidental", "3 Accidental", "4 Accidental",
+                                       "1 Pedagogical", "2 Pedagogical", "3 Pedagogical", "4 Pedagogical",
+                                       "Generic + 1 Pedagogical"))) %>%
+  arrange(condition) %>%
+  kable() #%>%
+  #write_csv(., path = "../writing/cogsci20/output_from_r/n_obs_bf_500k_500k.csv")
+```
+
+
+Make Latex Table
+
+```{r}
+read_csv("../paper/output_from_r/n_obs_expt1_bf_100k_3acc5m_100k_final.csv") %>%
+  select(-logbf) %>%
+  left_join(., read_csv("../paper/output_from_r/n_obs_expt2_bf_100k_100k_final.csv")  %>%
+              select(-logbf) %>% rename(e2 = bf)
+  ) %>%
+  xtable::xtable(., display = c('s','s','d','d')) %>%
+  print(., type = 'latex')
+```
+
+
+## Posterior Inference
+
+Not used in CogSci paper. This would serve as a posterior predictive check.
+
+
+```{r}
+jsonlite::toJSON(head(df.filtered.toPass.condition), pretty = T)
+
+n_samples = 10000
+
+rs.wp.condition <- webppl(
+  program_file = "webppl/mixture_of_betas.wppl",
+  data = list(responses = df.filtered.toPass.condition,
+              n_components = 2,
+              ais = F,
+              ais_samples = 1,
+              ais_steps = 1),
+  inference_opts = list(
+    method = "MCMC",
+    samples = n_samples,
+    burn = n_samples/2,
+    verbose = T),
+  chains = 1,
+  cores = 1
+  )
+```
+
+### Parameter posteriors
+```{r}
+rs.wp.condition %>%
+  ggplot(., aes( x =  value ))+
+  geom_histogram()+
+  facet_wrap(~Parameter, scales = 'free', nrow = 1)
+```
+
+```{r}
+rs.wp.condition %>%
+  ggplot(., aes( x =  value ))+
+  geom_histogram()+
+  facet_wrap(~Parameter, scales = 'free', nrow = 1)
+```
+
+### Posterior predictives
+
+```{r}
+rs.wp.condition.predictives <- rs.wp.condition %>%
+  spread(Parameter, value) %>% 
+  rowwise() %>%
+  mutate(component1 = rbernoulli(n = 1, p = phi0),
+         sample1 = rbeta(n = 1, shape1 = a0, shape2 = b0),
+         sample2 = rbeta(n = 1, shape1 = a1, shape2 = b1),
+         predictive = ifelse(component1, sample1, sample2))
+
+rs.wp.condition.predictives %>%
+  ggplot(., aes ( x = predictive))+
+  geom_histogram()
+```
+
+#### Empirical CDFs
+
+```{r}
+
+bind_rows(
+  rs.wp.condition.predictives %>%
+    mutate(src = 'model') %>%
+    select(src, predictive) %>%
+    rename(val = predictive),
+  df.filtered.toPass.condition %>%
+    mutate(src = 'data') %>%
+    select(src, avoided_endval) %>%
+    rename(val = avoided_endval)
+) %>%
+  ggplot(., aes( x = val, color = src))+
+    stat_ecdf()+
+    #scale_color_solarized()+
+    scale_x_continuous(limits = c(-0.01,1.01), breaks = c(0, 0.5, 1)) +
+    scale_y_continuous(limits = c(-0.01,1.01), breaks = c(0, 0.5, 1)) +
+    theme(strip.text.y = element_text(angle = 0))+
+    coord_fixed()
+```
+
+
+
+
+
+## MARGINAL LIKELIHOOD TESTING
+
+
+```{r}
+test.data <- data.frame(
+  avoided_endval = c(rbeta(n = 100, shape1 = 10, shape2 = 10), rbeta(n = 100, shape1 = 50, shape2 = 1))
+)
+```
+
+
+### AIS
+
+```{r}
+qplot(data = test.data, x = avoided_endval, geom = 'histogram')
+
+n_components <- c(1, 2, 3)
+# steps = 25k --> 30s
+rs.wp.ais <- data.frame()
+for (n_c in n_components){
+  t1 <- Sys.time()
+  
+  rs.wp.ais.i <- webppl(
+    program_file = "webppl/mixture_of_betas.wppl",
+    data = list(responses = test.data,
+                n_components = n_c,
+                ais = T,
+                ais_samples = 1,
+                ais_steps = 100000),
+    chains = 3,
+    cores = 3
+    )
+  
+  bind_rows(rs.wp.ais, 
+            data.frame(marg_ll = rs.wp.ais.i, n_c = n_c, row.names = NULL) %>%
+                mutate(iter = row_number())) -> rs.wp.ais 
+  t2 <- Sys.time()
+  print(paste("n components =", n_c, " time=", t2-t1))
+}
+rs.wp.ais
+
+#write_csv(rs.wp.ais, path = "webppl/output/ais_generic_nComponents_500k.csv")
+```
+
+```{r}
+rs.wp.ais %>% 
+  group_by(n_c) %>%
+  summarize(m = mean(marg_ll))
+```
+
+### Forward Sampling
+
+
+```{r}
+n_components <- c(1, 2, 3)
+# steps = 25k --> 30s
+rs.wp.fs <- data.frame()
+for (n_c in n_components){
+  t1 <- Sys.time()
+  
+  rs.wp.fs.i <- webppl(
+    program_file = "webppl/mixture_of_betas_forwardMarginalLikelihood.wppl",
+    data = list(responses = test.data,
+                n_components = n_c,
+                n_samples = 50000),
+    #inference_opts = list(method = "forward", samples = 50000),
+    chains = 3,
+    cores = 3
+    )
+  
+  bind_rows(rs.wp.fs, 
+             data.frame(marg_ll = rs.wp.fs.i, n_c = n_c, row.names = NULL) %>%
+                mutate(iter = row_number())) -> rs.wp.fs 
+  t2 <- Sys.time()
+  print(paste("n components =", n_c, " time=", t2-t1))
+}
+rs.wp.fs
+
+#write_csv(rs.wp.ais, path = "webppl/output/ais_generic_nComponents_500k.csv")
+```
+
+```{r}
+rs.wp.fs.save <- bind_rows(rs.wp.fs, rs.wp.fs.save)
+
+rs.wp.fs.save
+```
+
+
+#### Compare Bayes Factors when only have half the data
+
+If we want to employ optional stopping, what would our decisions have been if we only collected half of each of the conditions worth of data?
+
+```{r}
+
+n_c <- 2
+n_steps <- 250000
+# steps = 25k --> 30s
+rs.wp.ais.sameDists <- data.frame()
+rs.wp.ais.separateDists <- data.frame()
+
+df.filtered.toPass <- df.trials.filtered %>%
+  filter(type == "response") %>%
+  rowwise() %>%
+  mutate(avoided_endval = ifelse(response == 1, 0.999, 
+                                 ifelse (response == 0, 0.001, response)))
+
+
+data.subset.workerids <- df.filtered.toPass %>%
+  distinct(condition, workerid) %>%
+  group_by(condition) %>%
+  sample_n(20)
+  
+#all_conditions <- unique(df.filtered.toPass$condition)
+all_conditions <- c("4pedagogical", "generic")
+non_generic_conditions <- all_conditions[all_conditions != "generic"]
+
+for (cndtn in all_conditions){
+  t1 <- Sys.time()
+  print(cndtn)
+  
+  workerids.in.condition <- data.subset.workerids %>%
+    filter(condition == cndtn) %>%
+    pull(workerid)
+  
+  df.cndtn <- df.filtered.toPass %>%
+      filter(condition == cndtn)
+  
+  if (cndtn != "generic"){
+    df.cndtn <- df.cndtn %>% filter(workerid %in% workerids.in.condition)
+  }
+  
+  rs.wp.ais.separateDists.i <- webppl(
+    program_file = "webppl/mixture_of_betas.wppl",
+    data = list(responses = df.cndtn,
+                n_components = n_c,
+                ais = T,
+                ais_samples = 1,
+                ais_steps = n_steps),
+    chains = 3,
+    cores = 3
+    )
+  
+    bind_rows(rs.wp.ais.separateDists, 
+            data.frame(marg_ll = rs.wp.ais.separateDists.i, n_c = n_c, condition = cndtn, row.names = NULL) %>%
+                mutate(iter = row_number())) -> rs.wp.ais.separateDists 
+      
+  
+  if (cndtn != "generic"){
+    df.filtered.toPass.condition <- bind_rows(
+      df.cndtn, df.filtered.toPass %>%
+      filter(condition == "generic")
+    )
+
+    rs.wp.ais.sameDists.i <- webppl(
+      program_file = "webppl/mixture_of_betas.wppl",
+      data = list(responses = df.filtered.toPass.condition,
+                  n_components = n_c,
+                  ais = T,
+                  ais_samples = 1,
+                  ais_steps = n_steps),
+      chains = 3,
+      cores = 3
+      )
+    
+    bind_rows(rs.wp.ais.sameDists, 
+              data.frame(marg_ll = rs.wp.ais.sameDists.i, n_c = n_c, condition = cndtn, row.names = NULL) %>%
+                  mutate(iter = row_number())) -> rs.wp.ais.sameDists
+  }
+    
+    t2 <- Sys.time()
+    print(paste("n components =", n_c, " time=", t2-t1))
+
+}
+
+#write_csv(rs.wp.ais_2cond, path = "webppl/output/ais_2conds_allConds_nComponents_250k.csv")
+
+```
+
+```{r}
+rs.wp.ais_2cond <- read_csv(file = "webppl/output/ais_2conds_allConds_nComponents_5000k.csv")
+
+rs.wp.ais.sameDists %>%
+  group_by(condition, n_c) %>%
+  summarize(mean_marg_ll = mean(marg_ll)) -> rs.ml.halfData_same_distribution
+
+rs.wp.ais.separateDists %>%
+  filter(n_c == 2) %>%
+  group_by(condition) %>%
+  summarize(mean_marg_ll = mean(marg_ll)) -> rs.ml.halfData_ind_distribution
+
+cbind(rs.ml.halfData_ind_distribution %>%
+  filter(condition != "generic"),
+  rs.ml.halfData_ind_distribution %>%
+    filter(condition == "generic") %>%
+    rename(gen = mean_marg_ll) %>%
+    select(-condition)) %>%
+  mutate(total_marg_ll = mean_marg_ll + gen) -> rs.sum_ml.ind_distribution
+
+
+left_join(
+  rs.ml.same_distribution %>%
+    rename(same_dist = mean_marg_ll),
+  rs.sum_ml.ind_distribution %>%
+    rename(diff_dist = total_marg_ll)
+) %>%
+  rowwise() %>%
+  mutate(log_bf = same_dist - diff_dist,
+         bf_gen_equal_obs = exp(log_bf)) %>%
+  select(condition, bf_gen_equal_obs, log_bf) %>%
+  rename(bf = bf_gen_equal_obs, logbf = log_bf) %>%
+  mutate(condition = factor(condition, levels = c("accidental", "2accidental", "3accidental", "4accidental",
+                                                  "pedagogical", "2pedagogical", "3pedagogical", "4pedagogical",
+                                                  "pedageneric"),
+                            labels = c("1 Accidental", "2 Accidental", "3 Accidental", "4 Accidental",
+                                       "1 Pedagogical", "2 Pedagogical", "3 Pedagogical", "4 Pedagogical",
+                                       "Generic + 1 Pedagogical"))) %>%
+  arrange(condition) %>%
+  #kable()  %>%
+  write_csv(., path = "../writing/cogsci20/output_from_r/n_obs_bf.csv")
+```
