@@ -1,15 +1,16 @@
 // webppl mixture_of_betas-om.wppl --require ~/tools/webppl-csv independent 2accidental 1
-// webppl mixture_of_betas-om.wppl --require webppl-csv combined 2accidental 1
+// time webppl mixture_of_betas-om.wppl --require ~/tools/webppl-csv combined 2accidental 2 1
 
 var args = process.argv
 var index = last(args) // load index as last command line index
 
-var n_components = 2
-var ais_steps = 10000,
-    ais_samples = 5
+// var n_components = 2
+var ais_steps = 50000,
+    ais_samples = 100
 
-var modelVariant = args[args.length - 3]
-var condition = args[args.length - 2]
+var modelVariant = args[args.length - 4]
+var condition = args[args.length - 3]
+var n_components = webpplCsv.wpParseFloat(args[args.length - 2])
 
 // var dataFrame = function(rawCSV) {
 //   return map(function(row) {
@@ -105,17 +106,18 @@ var model = function() {
 }
 
 var resultsOutFile = "results/llh_" +  modelVariant + "_" + condition +
+  "_nComponents-" + n_components +
   "_steps-" + ais_steps + "_samples-" + ais_samples + "_chain-" + index + ".csv"
 
 var fileHandle = webpplCsv.openFile(resultsOutFile)
 
-var header_to_write = ["modelVariant", "condition", "steps", "sample_num", "chain", "weight"].join(",")
+var header_to_write = ["modelVariant", "condition", "n_components", "steps", "sample_num", "chain", "weight"].join(",")
 csv.writeLine(header_to_write,fileHandle)
 
 var weights = map(function(i) {
   console.log(i)
  var weight = AIS(model, {samples: 1, steps: ais_steps})
- var line_to_write = [modelVariant, condition, ais_steps, i, index, weight].join(",")
+ var line_to_write = [modelVariant, condition, n_components, ais_steps, i, index, weight].join(",")
 
  csv.writeLine(line_to_write, fileHandle)
  return weight
@@ -123,4 +125,5 @@ var weights = map(function(i) {
 
 weights;
 
+// n_components + 1
 // data_set
